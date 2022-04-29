@@ -10,6 +10,7 @@ import {
 import { colors, CLEAR, ENTER } from "./src/tools";
 import Keyboard from "./src/components/Keyboard/Keyboard";
 import { useState } from "react";
+import { color } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
 
 const number_of_tries = 6;
 
@@ -60,6 +61,32 @@ export default function App() {
       return row === currentRow && col === currentColumn;
    };
 
+   const getCellBGcolor = (row, col) => {
+      const letter = rows[row][col];
+
+      if (row >= currentRow) {
+         return colors.black;
+      }
+
+      if (letter === letters[col]) {
+         return colors.primary;
+      }
+      if (letters.includes(letter)) {
+         return colors.secondary;
+      }
+      return colors.darkgrey;
+   };
+
+   const getAllLettersWithColor = (color) => {
+      return rows.flatMap((row, i) =>
+         row.filter((cell, j) => getCellBGcolor(i, j) === color)
+      );
+   };
+
+   const greenCaps = getAllLettersWithColor(colors.primary);
+   const yellowCaps = getAllLettersWithColor(colors.secondary);
+   const greyCaps = getAllLettersWithColor(colors.darkgrey);
+
    return (
       <SafeAreaView style={styles.container}>
          <StatusBar style="light" />
@@ -78,6 +105,7 @@ export default function App() {
                               borderColor: isCellActive(i, j)
                                  ? colors.lightgrey
                                  : colors.darkgrey,
+                              backgroundColor: getCellBGcolor(i, j),
                            },
                         ]}
                      >
@@ -90,7 +118,12 @@ export default function App() {
             ))}
          </ScrollView>
          <View>
-            <Keyboard onKeyPressed={onKeyPressed} />
+            <Keyboard
+               onKeyPressed={onKeyPressed}
+               greenCaps={greenCaps}
+               yellowCaps={yellowCaps}
+               greyCaps={greyCaps}
+            />
          </View>
       </SafeAreaView>
    );
@@ -112,7 +145,6 @@ const styles = StyleSheet.create({
    map: {
       marginVertical: 15,
       alignSelf: "stretch",
-      height: 100,
    },
    row: {
       alignSelf: "stretch",
