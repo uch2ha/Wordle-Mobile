@@ -1,16 +1,8 @@
 import { StatusBar } from "expo-status-bar";
-import {
-   StyleSheet,
-   Text,
-   View,
-   SafeAreaView,
-   FlatList,
-   ScrollView,
-} from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, ScrollView } from "react-native";
 import { colors, CLEAR, ENTER } from "./src/tools";
 import Keyboard from "./src/components/Keyboard/Keyboard";
-import { useState } from "react";
-import { color } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
+import { useState, useEffect } from "react";
 
 const number_of_tries = 6;
 
@@ -23,12 +15,40 @@ export default function App() {
    );
    const [currentRow, setCurrentRow] = useState(0);
    const [currentColumn, setCurrentColumn] = useState(0);
+   const [gameState, setGameState] = useState("playing"); //win, lose, playing
+
+   useEffect(() => {
+      if (currentRow > 0) {
+         checkGameState();
+      }
+   }, [currentRow]);
+
+   const checkGameState = () => {
+      if (checkIfWin()) {
+         setGameState("win");
+      } else if (checkIfLose()) {
+         setGameState("lose");
+      }
+   };
+
+   const checkIfWin = () => {
+      const row = rows[currentRow - 1];
+      return row.every((letter, i) => letter === letters[i]);
+   };
+
+   const checkIfLose = () => {
+      return currentRow === rows.length;
+   };
 
    const copyArray = (arr) => {
       return [...arr.map((rows) => [...rows])];
    };
 
    const onKeyPressed = (key) => {
+      if (gameState !== "playing") {
+         return;
+      }
+
       const updatedArr = copyArray(rows);
 
       if (key === CLEAR) {
