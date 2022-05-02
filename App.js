@@ -4,13 +4,13 @@ import { Header } from "react-native-elements";
 import { Icon } from "react-native-elements";
 import { colors } from "./src/tools";
 import { useState, useEffect } from "react";
-import Game from "./src/components/Game";
+import Game from "./src/components/Game/Game";
 
 export default function App() {
    return (
       <SafeAreaView style={styles.container}>
-         {/* <StatusBar style="light" /> */}
-         <Header
+         <StatusBar style="light" />
+         {/* <Header
             // statusBarProps={{ barStyle: "light-content" }}
             // barStyle="light-content"
             backgroundColor="black"
@@ -25,10 +25,10 @@ export default function App() {
                color: "#eee",
                // onPress: () => forceUpdate(),
             }}
-         />
-         {/* <View>
+         /> */}
+         <View>
             <Text style={styles.title}>WORDLE</Text>
-         </View> */}
+         </View>
          <Game />
       </SafeAreaView>
    );

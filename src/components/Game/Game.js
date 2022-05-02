@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
-import Keyboard from "./Keyboard/Keyboard";
-import { colors, CLEAR, ENTER } from "../tools";
+import Keyboard from "../Keyboard/Keyboard";
+import { colors, CLEAR, ENTER } from "../../tools";
+import styles from "./Game.styles";
 
 const number_of_tries = 6;
 
@@ -143,34 +144,3 @@ export default function Game() {
       </View>
    );
 }
-
-const styles = StyleSheet.create({
-   map: {
-      marginVertical: 15,
-      alignSelf: "stretch",
-   },
-   row: {
-      alignSelf: "stretch",
-      flexDirection: "row",
-      justifyContent: "center",
-   },
-   cell: {
-      flex: 1,
-      aspectRatio: 1,
-      borderWidth: 3,
-      borderColor: colors.darkgrey,
-      margin: 3,
-      maxWidth: 70,
-      justifyContent: "center",
-      alignItems: "center",
-   },
-
-   cellText: {
-      color: colors.lightgrey,
-      fontWeight: "bold",
-      fontSize: 28,
-   },
-   keyboard: {
-      paddingBottom: 65,
-   },
-});
