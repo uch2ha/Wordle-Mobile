@@ -132,7 +132,7 @@ export default function Game() {
                </View>
             ))}
          </ScrollView>
-         <View>
+         <View style={styles.keyboard}>
             <Keyboard
                onKeyPressed={onKeyPressed}
                greenCaps={greenCaps}
@@ -145,18 +145,6 @@ export default function Game() {
 }
 
 const styles = StyleSheet.create({
-   // container: {
-   //    flex: 1,
-   //    backgroundColor: colors.black,
-   //    alignItems: "center",
-   //    paddingTop: Platform.OS === "android" ? 40 : 0,
-   // },
-   // title: {
-   //    color: colors.lightgrey,
-   //    fontSize: 32,
-   //    fontWeight: "bold",
-   //    letterSpacing: 5,
-   // },
    map: {
       marginVertical: 15,
       alignSelf: "stretch",
@@ -181,5 +169,8 @@ const styles = StyleSheet.create({
       color: colors.lightgrey,
       fontWeight: "bold",
       fontSize: 28,
+   },
+   keyboard: {
+      paddingBottom: 65,
    },
 });

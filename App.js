@@ -20,7 +20,11 @@ export default function App() {
                color: "white",
             }}
             centerComponent={<Text style={styles.title}>WORDLE</Text>}
-            rightComponent={{ icon: "home", color: "#eee" }}
+            rightComponent={{
+               icon: "home",
+               color: "#eee",
+               // onPress: () => forceUpdate(),
+            }}
          />
          {/* <View>
             <Text style={styles.title}>WORDLE</Text>
@@ -35,7 +39,7 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: colors.black,
       alignItems: "center",
-      paddingTop: Platform.OS === "android" ? 20 : 0,
+      paddingTop: Platform.OS === "android" ? 30 : 0,
    },
    title: {
       color: colors.lightgrey,
