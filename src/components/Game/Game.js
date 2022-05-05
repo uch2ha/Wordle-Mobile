@@ -21,6 +21,7 @@ import Animated, {
 const NUMBER_Of_TRIES = 10;
 
 export default function Game({ word, setNewWord: getNewWord }) {
+   // to clear all storage data
    // AsyncStorage.removeItem("@gameData");
 
    const [letters, setLetters] = useState(word);
@@ -50,6 +51,7 @@ export default function Game({ word, setNewWord: getNewWord }) {
 
    const saveStateToCash = async () => {
       const data = {
+         letters,
          rows,
          currentRow,
          currentColumn,
@@ -68,6 +70,7 @@ export default function Game({ word, setNewWord: getNewWord }) {
       const dataString = await AsyncStorage.getItem("@gameData");
       try {
          const data = JSON.parse(dataString);
+         setLetters(data.letters);
          setRows(data.rows);
          setCurrentRow(data.currentRow);
          setCurrentColumn(data.currentColumn);
@@ -89,6 +92,7 @@ export default function Game({ word, setNewWord: getNewWord }) {
       setGameState("playing");
 
       const data = {
+         letters: new_word,
          rows: new Array(NUMBER_Of_TRIES).fill(
             new Array(new_word.length).fill("")
          ),

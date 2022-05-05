@@ -1,18 +1,7 @@
 import { StyleSheet, View, Text, Button } from "react-native";
 import React from "react";
 import { colors } from "../../tools";
-import Animated, {
-   SlideInDown,
-   SlideInUp,
-   ZoomIn,
-} from "react-native-reanimated";
-
-const StatNumber = ({ number, label }) => (
-   <View style={styles.statNumberCell}>
-      <Text style={styles.statNumberText}>{number}</Text>
-      <Text style={styles.statLabelText}>{label}</Text>
-   </View>
-);
+import Animated, { SlideInUp, ZoomIn } from "react-native-reanimated";
 
 const EndScreen = ({ won, resetGame, word }) => {
    return (
@@ -23,7 +12,9 @@ const EndScreen = ({ won, resetGame, word }) => {
          <Text style={styles.title}>
             {won ? "Congratulations!" : "Nice try!\n Good Luck next time"}
          </Text>
-         <Text style={styles.subtitle}>The Word was "{word}"</Text>
+         <Text style={styles.subtitle}>
+            The word was "{word.join("").toUpperCase()}"
+         </Text>
          <Animated.View entering={ZoomIn.delay(1500)}>
             <Button
                onPress={() => resetGame()}
