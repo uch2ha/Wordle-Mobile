@@ -1,8 +1,16 @@
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import {
+   StyleSheet,
+   Text,
+   View,
+   ScrollView,
+   ActivityIndicator,
+} from "react-native";
 import { useState, useEffect } from "react";
 import Keyboard from "../Keyboard/Keyboard";
 import { colors, CLEAR, ENTER } from "../../tools";
 import styles from "./Game.styles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import EndScreen from "../EndScreen";
 
 const number_of_tries = 6;
 
@@ -16,12 +24,75 @@ export default function Game() {
    const [currentRow, setCurrentRow] = useState(0);
    const [currentColumn, setCurrentColumn] = useState(0);
    const [gameState, setGameState] = useState("playing"); //win, lose, playing
+   const [loaded, setLoaded] = useState(false);
+
+   useEffect(() => {
+      readState();
+   }, []);
 
    useEffect(() => {
       if (currentRow > 0) {
          checkGameState();
       }
    }, [currentRow]);
+
+   useEffect(() => {
+      if (loaded) {
+         saveStateToCash();
+      }
+   }, [rows, currentRow, currentColumn, gameState]);
+
+   const saveStateToCash = async () => {
+      const data = {
+         rows,
+         currentRow,
+         currentColumn,
+         gameState,
+      };
+
+      try {
+         const dataString = JSON.stringify(data);
+         await AsyncStorage.setItem("@gameData", dataString);
+      } catch (e) {
+         console.log("Error then saveStateToCash", e);
+      }
+   };
+
+   const readState = async () => {
+      const dataString = await AsyncStorage.getItem("@gameData");
+      try {
+         const data = JSON.parse(dataString);
+
+         setRows(data.rows);
+         setCurrentRow(data.currentRow);
+         setCurrentColumn(data.currentColumn);
+         setGameState(data.gameState);
+      } catch (e) {
+         console.log("Error then readState", e);
+      }
+      setLoaded(true);
+   };
+
+   const resetGame = async () => {
+      setRows(new Array(6).fill(new Array(5).fill("")));
+      setCurrentRow(0);
+      setCurrentColumn(0);
+      setGameState("playing");
+
+      const data = {
+         rows: new Array(6).fill(new Array(5).fill("")),
+         currentRow: 0,
+         currentColumn: 0,
+         gameState: "playing",
+      };
+
+      try {
+         const dataString = JSON.stringify(data);
+         await AsyncStorage.setItem("@gameData", dataString);
+      } catch (e) {
+         console.log("Error then saveStateToCash", e);
+      }
+   };
 
    const checkGameState = () => {
       if (checkIfWin()) {
@@ -106,6 +177,14 @@ export default function Game() {
    const greenCaps = getAllLettersWithColor(colors.primary);
    const yellowCaps = getAllLettersWithColor(colors.secondary);
    const greyCaps = getAllLettersWithColor(colors.darkgrey);
+
+   if (!loaded) {
+      return <ActivityIndicator />;
+   }
+
+   if (gameState !== "playing") {
+      return <EndScreen won={gameState === "win"} resetGame={resetGame} />;
+   }
 
    return (
       <View>
