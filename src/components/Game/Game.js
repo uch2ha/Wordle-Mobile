@@ -11,15 +11,21 @@ import { colors, CLEAR, ENTER } from "../../tools";
 import styles from "./Game.styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EndScreen from "../EndScreen";
+import Animated, {
+   ZoomIn,
+   SlideInLeft,
+   SlideInRight,
+   FlipInEasyX,
+} from "react-native-reanimated";
 
-const number_of_tries = 6;
+const NUMBER_Of_TRIES = 10;
 
-export default function Game() {
-   const word = "hello";
-   const letters = word.split("");
+export default function Game({ word, setNewWord: getNewWord }) {
+   // AsyncStorage.removeItem("@gameData");
 
+   const [letters, setLetters] = useState(word);
    const [rows, setRows] = useState(
-      new Array(number_of_tries).fill(new Array(letters.length).fill(""))
+      new Array(NUMBER_Of_TRIES).fill(new Array(letters.length).fill(""))
    );
    const [currentRow, setCurrentRow] = useState(0);
    const [currentColumn, setCurrentColumn] = useState(0);
@@ -62,7 +68,6 @@ export default function Game() {
       const dataString = await AsyncStorage.getItem("@gameData");
       try {
          const data = JSON.parse(dataString);
-
          setRows(data.rows);
          setCurrentRow(data.currentRow);
          setCurrentColumn(data.currentColumn);
@@ -74,13 +79,19 @@ export default function Game() {
    };
 
    const resetGame = async () => {
-      setRows(new Array(6).fill(new Array(5).fill("")));
+      const new_word = getNewWord().split("");
+      setLetters(new_word);
+      setRows(
+         new Array(NUMBER_Of_TRIES).fill(new Array(new_word.length).fill(""))
+      );
       setCurrentRow(0);
       setCurrentColumn(0);
       setGameState("playing");
 
       const data = {
-         rows: new Array(6).fill(new Array(5).fill("")),
+         rows: new Array(NUMBER_Of_TRIES).fill(
+            new Array(new_word.length).fill("")
+         ),
          currentRow: 0,
          currentColumn: 0,
          gameState: "playing",
@@ -178,38 +189,78 @@ export default function Game() {
    const yellowCaps = getAllLettersWithColor(colors.secondary);
    const greyCaps = getAllLettersWithColor(colors.darkgrey);
 
+   const getCellStytle = (i, j) => [
+      styles.cell,
+      {
+         borderColor: isCellActive(i, j) ? colors.lightgrey : colors.darkgrey,
+         backgroundColor: getCellBGcolor(i, j),
+      },
+   ];
+
    if (!loaded) {
       return <ActivityIndicator />;
    }
 
    if (gameState !== "playing") {
-      return <EndScreen won={gameState === "win"} resetGame={resetGame} />;
+      return (
+         <EndScreen
+            won={gameState === "win"}
+            resetGame={resetGame}
+            word={letters}
+         />
+      );
    }
 
    return (
       <View>
          <ScrollView style={styles.map}>
             {rows.map((row, i) => (
-               <View key={`row-${i}`} style={styles.row}>
+               <Animated.View
+                  entering={
+                     i % 2 === 0
+                        ? SlideInLeft.delay(i * 50)
+                        : SlideInRight.delay(i * 50)
+                  }
+                  key={`row-${i}`}
+                  style={styles.row}
+               >
                   {row.map((letter, j) => (
-                     <View
-                        key={`cell-${i}-${j}`}
-                        style={[
-                           styles.cell,
-                           {
-                              borderColor: isCellActive(i, j)
-                                 ? colors.lightgrey
-                                 : colors.darkgrey,
-                              backgroundColor: getCellBGcolor(i, j),
-                           },
-                        ]}
-                     >
-                        <Text style={styles.cellText}>
-                           {letter.toUpperCase()}
-                        </Text>
-                     </View>
+                     <>
+                        {i < currentRow && (
+                           <Animated.View
+                              entering={FlipInEasyX.delay(j * 100)}
+                              key={`cell-colored-${i}-${j}`}
+                              style={getCellStytle(i, j)}
+                           >
+                              <Text style={styles.cellText}>
+                                 {letter.toUpperCase()}
+                              </Text>
+                           </Animated.View>
+                        )}
+                        {i === currentRow && !!letter && (
+                           <Animated.View
+                              entering={ZoomIn}
+                              key={`cell-active-${i}-${j}`}
+                              style={getCellStytle(i, j)}
+                           >
+                              <Text style={styles.cellText}>
+                                 {letter.toUpperCase()}
+                              </Text>
+                           </Animated.View>
+                        )}
+                        {!letter && (
+                           <View
+                              key={`cell-${i}-${j}`}
+                              style={getCellStytle(i, j)}
+                           >
+                              <Text style={styles.cellText}>
+                                 {letter.toUpperCase()}
+                              </Text>
+                           </View>
+                        )}
+                     </>
                   ))}
-               </View>
+               </Animated.View>
             ))}
          </ScrollView>
          <View style={styles.keyboard}>

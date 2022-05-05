@@ -6,30 +6,23 @@ import { colors } from "./src/tools";
 import { useState, useEffect } from "react";
 import Game from "./src/components/Game/Game";
 
+const CUSTOM_DATA = require("./src/data/english_words.json");
+
 export default function App() {
+   const getNewWord = () => {
+      const wordList = CUSTOM_DATA[Math.floor(Math.random() * 3 + 4)];
+      let new_word = wordList[Math.floor(Math.random() * wordList.length)];
+      console.log(new_word);
+      return new_word;
+   };
+
    return (
       <SafeAreaView style={styles.container}>
          <StatusBar style="light" />
-         {/* <Header
-            // statusBarProps={{ barStyle: "light-content" }}
-            // barStyle="light-content"
-            backgroundColor="black"
-            containerStyle={{}}
-            leftComponent={{
-               icon: "menu",
-               color: "white",
-            }}
-            centerComponent={<Text style={styles.title}>WORDLE</Text>}
-            rightComponent={{
-               icon: "home",
-               color: "#eee",
-               // onPress: () => forceUpdate(),
-            }}
-         /> */}
          <View>
             <Text style={styles.title}>WORDLE</Text>
          </View>
-         <Game />
+         <Game setNewWord={getNewWord} word={getNewWord().split("")} />
       </SafeAreaView>
    );
 }
@@ -39,7 +32,7 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: colors.black,
       alignItems: "center",
-      paddingTop: Platform.OS === "android" ? 30 : 0,
+      paddingTop: Platform.OS === "android" ? 40 : 0,
    },
    title: {
       color: colors.lightgrey,

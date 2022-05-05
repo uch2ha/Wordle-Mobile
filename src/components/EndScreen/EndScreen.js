@@ -1,6 +1,11 @@
 import { StyleSheet, View, Text, Button } from "react-native";
 import React from "react";
 import { colors } from "../../tools";
+import Animated, {
+   SlideInDown,
+   SlideInUp,
+   ZoomIn,
+} from "react-native-reanimated";
 
 const StatNumber = ({ number, label }) => (
    <View style={styles.statNumberCell}>
@@ -9,53 +14,43 @@ const StatNumber = ({ number, label }) => (
    </View>
 );
 
-const EndScreen = ({ won, resetGame }) => {
+const EndScreen = ({ won, resetGame, word }) => {
    return (
-      <View>
+      <Animated.View
+         entering={SlideInUp.springify().delay(300)}
+         style={styles.container}
+      >
          <Text style={styles.title}>
             {won ? "Congratulations!" : "Nice try!\n Good Luck next time"}
          </Text>
-         <View>
+         <Text style={styles.subtitle}>The Word was "{word}"</Text>
+         <Animated.View entering={ZoomIn.delay(1500)}>
             <Button
                onPress={() => resetGame()}
                title="RESTART"
                color="#841584"
             />
-         </View>
-      </View>
+         </Animated.View>
+      </Animated.View>
    );
 };
 
 const styles = StyleSheet.create({
+   container: {
+      marginVertical: 250,
+   },
    title: {
       fontSize: 30,
       color: "white",
       textAlign: "center",
-      marginVertical: 15,
+      marginVertical: 0,
+      fontWeight: "bold",
    },
    subtitle: {
       fontSize: 20,
       color: colors.lightgrey,
       textAlign: "center",
-      marginVertical: 10,
-      fontWeight: "bold",
-   },
-   statNumbersContainer: {
-      flexDirection: "row",
-      marginBottom: 20,
-   },
-   statNumberCell: {
-      alignItems: "center",
-      margin: 10,
-   },
-   statNumberText: {
-      color: colors.lightgrey,
-      fontSize: 30,
-      fontWeight: "bold",
-   },
-   statLabelText: {
-      color: colors.lightgrey,
-      fontSize: 15,
+      marginVertical: 30,
    },
 });
 
