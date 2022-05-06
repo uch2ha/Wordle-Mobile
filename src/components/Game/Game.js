@@ -1,10 +1,4 @@
-import {
-   StyleSheet,
-   Text,
-   View,
-   ScrollView,
-   ActivityIndicator,
-} from "react-native";
+import { Text, View, ScrollView, ActivityIndicator } from "react-native";
 import { useState, useEffect } from "react";
 import Keyboard from "../Keyboard/Keyboard";
 import { colors, CLEAR, ENTER } from "../../tools";
@@ -18,15 +12,16 @@ import Animated, {
    FlipInEasyX,
 } from "react-native-reanimated";
 
-const NUMBER_Of_TRIES = 7;
-
-export default function Game({ word, getNewWord }) {
+export default function Game({ word, getNewWord, getNumberOfRows }) {
    // to clear all storage data
    // AsyncStorage.removeItem("@gameData");
 
+   const [numberOfRows, setNumberOfRows] = useState(getNumberOfRows(word));
    const [letters, setLetters] = useState(word);
    const [rows, setRows] = useState(
-      new Array(NUMBER_Of_TRIES).fill(new Array(letters.length).fill(""))
+      new Array(numberOfRows).fill(new Array(letters.length).fill(""))
+      // tests
+      // new Array(8).fill(new Array(6).fill(""))
    );
    const [currentRow, setCurrentRow] = useState(0);
    const [currentColumn, setCurrentColumn] = useState(0);
@@ -51,6 +46,7 @@ export default function Game({ word, getNewWord }) {
 
    const saveStateToCash = async () => {
       const data = {
+         numberOfRows,
          letters,
          rows,
          currentRow,
@@ -70,6 +66,7 @@ export default function Game({ word, getNewWord }) {
       const dataString = await AsyncStorage.getItem("@gameData");
       try {
          const data = JSON.parse(dataString);
+         setNumberOfRows(data.numberOfRows);
          setLetters(data.letters);
          setRows(data.rows);
          setCurrentRow(data.currentRow);
@@ -82,23 +79,27 @@ export default function Game({ word, getNewWord }) {
    };
 
    const resetGame = async () => {
-      const new_word = getNewWord().split("");
+      const new_word = getNewWord();
+      const new_number_of_rows = getNumberOfRows(new_word);
+      const new_letters = new_word.split("");
 
       const data = {
-         letters: new_word,
-         rows: new Array(NUMBER_Of_TRIES).fill(
-            new Array(new_word.length).fill("")
+         numberOfRows: new_number_of_rows,
+         letters: new_letters,
+         rows: new Array(new_number_of_rows).fill(
+            new Array(new_letters.length).fill("")
          ),
          currentRow: 0,
          currentColumn: 0,
          gameState: "playing",
       };
 
+      setNumberOfRows(data.numberOfRows);
+      setLetters(data.letters);
       setRows(data.rows);
       setCurrentRow(data.currentRow);
       setCurrentColumn(data.currentColumn);
       setGameState(data.gameState);
-      setLetters(new_word);
 
       try {
          const dataString = JSON.stringify(data);
