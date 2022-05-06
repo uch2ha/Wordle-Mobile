@@ -6,7 +6,7 @@ import Animated, { SlideInUp, ZoomIn } from "react-native-reanimated";
 const EndScreen = ({ won, resetGame, word }) => {
    return (
       <Animated.View
-         entering={SlideInUp.springify().delay(300)}
+         entering={won ? SlideInUp.springify().delay(300) : ZoomIn.delay(300)}
          style={styles.container}
       >
          <Text style={styles.title}>
@@ -15,12 +15,10 @@ const EndScreen = ({ won, resetGame, word }) => {
          <Text style={styles.subtitle}>
             The word was "{word.join("").toUpperCase()}"
          </Text>
-         <Animated.View entering={ZoomIn.delay(1500)}>
-            <Button
-               onPress={() => resetGame()}
-               title="RESTART"
-               color="#841584"
-            />
+         <Animated.View
+            entering={won ? ZoomIn.delay(1500) : ZoomIn.delay(1000)}
+         >
+            <Button onPress={() => resetGame()} title="RESTART" color="blue" />
          </Animated.View>
       </Animated.View>
    );

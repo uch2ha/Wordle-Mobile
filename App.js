@@ -22,7 +22,7 @@ export default function App() {
          <View>
             <Text style={styles.title}>WORDLE</Text>
          </View>
-         <Game setNewWord={getNewWord} word={getNewWord().split("")} />
+         <Game getNewWord={getNewWord} word={getNewWord().split("")} />
       </SafeAreaView>
    );
 }

@@ -18,9 +18,9 @@ import Animated, {
    FlipInEasyX,
 } from "react-native-reanimated";
 
-const NUMBER_Of_TRIES = 10;
+const NUMBER_Of_TRIES = 7;
 
-export default function Game({ word, setNewWord: getNewWord }) {
+export default function Game({ word, getNewWord }) {
    // to clear all storage data
    // AsyncStorage.removeItem("@gameData");
 
@@ -83,13 +83,6 @@ export default function Game({ word, setNewWord: getNewWord }) {
 
    const resetGame = async () => {
       const new_word = getNewWord().split("");
-      setLetters(new_word);
-      setRows(
-         new Array(NUMBER_Of_TRIES).fill(new Array(new_word.length).fill(""))
-      );
-      setCurrentRow(0);
-      setCurrentColumn(0);
-      setGameState("playing");
 
       const data = {
          letters: new_word,
@@ -101,11 +94,17 @@ export default function Game({ word, setNewWord: getNewWord }) {
          gameState: "playing",
       };
 
+      setRows(data.rows);
+      setCurrentRow(data.currentRow);
+      setCurrentColumn(data.currentColumn);
+      setGameState(data.gameState);
+      setLetters(new_word);
+
       try {
          const dataString = JSON.stringify(data);
          await AsyncStorage.setItem("@gameData", dataString);
       } catch (e) {
-         console.log("Error then saveStateToCash", e);
+         console.log("Error then reset game", e);
       }
    };
 
@@ -217,6 +216,9 @@ export default function Game({ word, setNewWord: getNewWord }) {
 
    return (
       <View>
+         <Text style={{ color: "blue", alignSelf: "center" }}>
+            {letters.join("").toUpperCase()}
+         </Text>
          <ScrollView style={styles.map}>
             {rows.map((row, i) => (
                <Animated.View

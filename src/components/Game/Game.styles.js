@@ -3,7 +3,7 @@ import { colors } from "../../tools";
 
 export default StyleSheet.create({
    map: {
-      marginVertical: 10,
+      marginVertical: 5,
       alignSelf: "stretch",
    },
    row: {
