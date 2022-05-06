@@ -10,10 +10,16 @@ const CUSTOM_DATA = require("./src/data/english_words.json");
 
 export default function App() {
    const getNewWord = () => {
-      const wordList = CUSTOM_DATA[Math.floor(Math.random() * 3 + 4)];
+      const wordList = CUSTOM_DATA[Math.floor(Math.random() * 5 + 3)]; // from 3 to 8 word's length
       let new_word = wordList[Math.floor(Math.random() * wordList.length)];
       console.log(new_word);
       return new_word;
+   };
+
+   const getNumberOfRows = (word) => {
+      return word.length < 7
+         ? word.length + 2
+         : word.length + Math.floor(word.length / 2);
    };
 
    return (
@@ -22,7 +28,11 @@ export default function App() {
          <View>
             <Text style={styles.title}>WORDLE</Text>
          </View>
-         <Game getNewWord={getNewWord} word={getNewWord().split("")} />
+         <Game
+            getNewWord={getNewWord}
+            getNumberOfRows={getNumberOfRows}
+            word={getNewWord().split("")}
+         />
       </SafeAreaView>
    );
 }
