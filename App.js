@@ -1,7 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, SafeAreaView, ScrollView } from "react-native";
-import { Header } from "react-native-elements";
-import { Icon } from "react-native-elements";
+import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import { colors } from "./src/tools";
 import { useState, useEffect } from "react";
 import Game from "./src/components/Game/Game";
@@ -26,7 +24,8 @@ export default function App() {
          console.log("Error then read wins history", e);
       }
    };
-
+   // take full wordList from JSON file and take wordList @winsHistory from AsyncStorage and merge them
+   // remove all words that have been guessed
    const getMergedDict = (winsList) => {
       const allWordDict = CUSTOM_DATA;
 
@@ -42,13 +41,10 @@ export default function App() {
       return mergedDict;
    };
 
-   // take full wordList from JSON file and take wordList @winsHistory from AsyncStorage and merge them
-   // remove all words that have been guessed
    const getNewWord = (winsList) => {
       const mergedDict = getMergedDict(winsList);
 
-      // const wordList = mergedDict[Math.floor(Math.random() * 5 + 3)]; // choose random word length from 3 to 8 word's length
-      const wordList = mergedDict[3]; // choose random word length from 3 to 8 word's length
+      const wordList = mergedDict[Math.floor(Math.random() * 5 + 3)]; // choose random word length from 3 to 8 word's length
       let new_word = wordList[Math.floor(Math.random() * wordList.length)]; // choose random word
       console.log(new_word);
 
