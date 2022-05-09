@@ -3,7 +3,7 @@ import React from "react";
 import { colors } from "../../tools";
 import Animated, { SlideInUp, ZoomIn } from "react-native-reanimated";
 
-const EndScreen = ({ won, resetGame, word }) => {
+const EndScreen = ({ won, resetGame, word, allWordDict, mergedDict }) => {
    return (
       <Animated.View
          entering={won ? SlideInUp.springify().delay(300) : ZoomIn.delay(300)}
@@ -15,6 +15,8 @@ const EndScreen = ({ won, resetGame, word }) => {
          <Text style={styles.subtitle}>
             The word was "{word.join("").toUpperCase()}"
          </Text>
+         <Text style={styles.subtitle}>{allWordDict[3].length}</Text>
+         <Text style={styles.subtitle}>{mergedDict[3].length}</Text>
          <Animated.View
             entering={won ? ZoomIn.delay(1500) : ZoomIn.delay(1000)}
          >

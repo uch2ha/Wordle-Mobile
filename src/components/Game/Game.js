@@ -12,21 +12,33 @@ import Animated, {
    FlipInEasyX,
 } from "react-native-reanimated";
 
-export default function Game({ word, getNewWord, getNumberOfRows }) {
-   // to clear all storage data
+export default function Game({
+   splitedWord,
+   getNewWord,
+   getNumberOfRows,
+   allWordDict,
+   getMergedDict,
+}) {
+   // to clear @game storage data
    // AsyncStorage.removeItem("@gameData");
 
-   const [numberOfRows, setNumberOfRows] = useState(getNumberOfRows(word));
-   const [letters, setLetters] = useState(word);
+   // to clear @winsHistory storage data
+   // AsyncStorage.removeItem("@winsHistory");
+
+   const [numberOfRows, setNumberOfRows] = useState(
+      getNumberOfRows(splitedWord)
+   );
+   const [letters, setLetters] = useState(splitedWord);
    const [rows, setRows] = useState(
       new Array(numberOfRows).fill(new Array(letters.length).fill(""))
-      // tests
+      // to tests
       // new Array(8).fill(new Array(6).fill(""))
    );
    const [currentRow, setCurrentRow] = useState(0);
    const [currentColumn, setCurrentColumn] = useState(0);
    const [gameState, setGameState] = useState("playing"); //win, lose, playing
    const [loaded, setLoaded] = useState(false);
+   const [winsHistoryData, setWinsHistoryData] = useState([]);
 
    useEffect(() => {
       readState();
@@ -43,6 +55,10 @@ export default function Game({ word, getNewWord, getNumberOfRows }) {
          saveStateToCash();
       }
    }, [rows, currentRow, currentColumn, gameState]);
+
+   useEffect(() => {
+      readWinsHistory();
+   }, [gameState]);
 
    const saveStateToCash = async () => {
       const data = {
@@ -79,7 +95,7 @@ export default function Game({ word, getNewWord, getNumberOfRows }) {
    };
 
    const resetGame = async () => {
-      const new_word = getNewWord();
+      const new_word = getNewWord(winsHistoryData);
       const new_number_of_rows = getNumberOfRows(new_word);
       const new_letters = new_word.split("");
 
@@ -109,9 +125,35 @@ export default function Game({ word, getNewWord, getNumberOfRows }) {
       }
    };
 
+   const readWinsHistory = async () => {
+      const dataString = await AsyncStorage.getItem("@winsHistory");
+      // read stash of @winsHistory
+      try {
+         const data = JSON.parse(dataString);
+         setWinsHistoryData(data !== null ? data : []);
+      } catch (e) {
+         console.log("Error then read wins history", e);
+      }
+   };
+
+   const saveWinsHistory = async (word) => {
+      let data = winsHistoryData;
+      data.push(word);
+
+      // save stash to @winsHistory
+      try {
+         const dataString = JSON.stringify(data);
+         await AsyncStorage.setItem("@winsHistory", dataString);
+      } catch (e) {
+         console.log("Error then save wins history", e);
+      }
+   };
+
    const checkGameState = () => {
       if (checkIfWin()) {
          setGameState("win");
+         // stash game data history of wins
+         saveWinsHistory(letters.join(""));
       } else if (checkIfLose()) {
          setGameState("lose");
       }
@@ -211,6 +253,8 @@ export default function Game({ word, getNewWord, getNumberOfRows }) {
             won={gameState === "win"}
             resetGame={resetGame}
             word={letters}
+            allWordDict={allWordDict}
+            mergedDict={getMergedDict(winsHistoryData)}
          />
       );
    }
