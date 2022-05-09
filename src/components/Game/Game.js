@@ -31,8 +31,6 @@ export default function Game({
    const [letters, setLetters] = useState(splitedWord);
    const [rows, setRows] = useState(
       new Array(numberOfRows).fill(new Array(letters.length).fill(""))
-      // to tests
-      // new Array(8).fill(new Array(6).fill(""))
    );
    const [currentRow, setCurrentRow] = useState(0);
    const [currentColumn, setCurrentColumn] = useState(0);
