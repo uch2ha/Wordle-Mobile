@@ -259,9 +259,6 @@ export default function Game({
 
    return (
       <View>
-         <Text style={{ color: "blue", alignSelf: "center" }}>
-            {letters.join("").toUpperCase()}
-         </Text>
          <ScrollView style={styles.map}>
             {rows.map((row, i) => (
                <Animated.View

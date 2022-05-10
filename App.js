@@ -46,7 +46,6 @@ export default function App() {
 
       const wordList = mergedDict[Math.floor(Math.random() * 5 + 3)]; // choose random word length from 3 to 8 word's length
       let new_word = wordList[Math.floor(Math.random() * wordList.length)]; // choose random word
-      console.log(new_word);
 
       return new_word;
    };
