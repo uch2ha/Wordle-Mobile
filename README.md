@@ -12,8 +12,7 @@ Game:
 Test Game where the hidden word is immediately displayed:
 
     https://expo.dev/@uch2ha/wordle-react-native-to-tests
-    
-    
+        
     
 Game rules:
 
@@ -28,4 +27,7 @@ Game rules:
     The guessed word will no longer be guessed on this device.
   
     If you guess the word. You will see statistics on how many words you have already guessed out of all
+    
+    
+![Main Page](assets/wordle_screenshot.png)    
   
