@@ -29,5 +29,5 @@ Game rules:
     If you guess the word. You will see statistics on how many words you have already guessed out of all
     
     
-![Main Page](assets/wordle_screenshot.png)    
+![Main Page 1](assets/wordle_screenshot.png)    
   
